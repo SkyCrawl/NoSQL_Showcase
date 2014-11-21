@@ -1,5 +1,4 @@
 .DS_Store
 .qicon
 
-build
-WebContent/WEB-INF/classes
+war/WEB-INF/classes
