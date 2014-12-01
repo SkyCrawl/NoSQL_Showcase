@@ -26,15 +26,20 @@
 		<dependency org="com.vaadin" name="vaadin-client" rev="&vaadin.version;" conf="widgetset-compile->default" />
 		<dependency org="com.vaadin" name="vaadin-client-compiler" rev="&vaadin.version;" conf="widgetset-compile->default" />
 
-		<!-- Servlet 3.0 API -->
-		<dependency org="javax.servlet" name="javax.servlet-api" rev="3.0.1" conf="nodeploy->default" />
-
 		<!-- VAADIN ADD-ONS -->
-		<dependency org="org.vaadin.addon" name="confirmdialog" rev="2.0.4" />
+		<dependency org="org.vaadin.alump.fancylayouts" name="fancylayouts-addon" rev="1.0.1" />
+		<dependency org="de.steinwedel.vaadin.addon" name="messagebox" rev="2.0.6" />
+		<dependency org="org.vaadin.addons" name="popupbutton" rev="2.4.1" />
 		
-		<!-- OTHER INCLUDES -->
-		<dependency org="com.basho.riak" name="riak-client" rev="2.0.0" />
-		<dependency org="redis.clients" name="jedis" rev="2.2.1" />
+		<!-- DATABASE CLIENTS -->
+		<dependency org="org.apache.hadoop" name="hadoop-core" rev="1.2.1" />
+		<dependency org="com.basho.riak" name="riak-client" rev="1.4.4" />
+		<dependency org="redis.clients" name="jedis" rev="2.6.1" />
+		
+		<!-- MISCELLANEOUS -->
+		<dependency org="javax.servlet" name="javax.servlet-api" rev="3.0.1" conf="nodeploy->default" />
+		<dependency org="com.google.guava" name="guava" rev="18.0" />
+		<dependency org="org.apache.commons" name="commons-csv" rev="1.1" />
 		
 	</dependencies>
 </ivy-module>

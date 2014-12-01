@@ -1,0 +1,47 @@
+@mixin abstractDatabaseUI
+{
+	.a-db-ui .bannerArea
+	{
+		margin-top: 20px;
+		margin-bottom: 30px;
+	}
+	
+	.a-db-ui .bannerArea-dbInfo .v-formlayout-captioncell > .v-caption
+	{
+		/* override Vaadin */
+		font-size: inherit;
+		font-weight: bold;
+	}
+	
+	.a-db-ui .bannerArea-dbInfo .v-formlayout-row > td
+	{
+		padding-top: 0px !important; /* override Vaadin */
+	}
+	
+	.a-db-ui .bannerArea-dbInfo .v-formlayout-row .v-formlayout-errorcell
+	{
+		width: 50px;
+	}
+	
+	.a-db-ui .bannerArea-dbInfo .v-formlayout-row .v-formlayout-errorcell .v-formlayout-error-indicator
+	{
+		float: right;
+	}
+	
+	.a-db-ui .v-menubar-menuitem-miniApp
+	{
+		float: right;
+	}
+	
+	.a-db-ui .miniApp
+	{
+		/* duplicate some of Vaadin MenuBar's visuals */
+		border: 1px solid #c5c5c5;
+		border-top-color: #c5c5c5;
+		border-bottom-color: #bcbcbc;
+		background-color: #fafafa;
+		
+		/* other setup */
+		padding: 15px;
+	}
+}

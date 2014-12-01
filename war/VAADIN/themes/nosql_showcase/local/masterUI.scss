@@ -1,0 +1,30 @@
+@mixin masterUI
+{
+	.v-caption.v-caption-master-ui
+	{
+		margin-top: 50px;
+		margin-bottom: 25px;
+	}
+	
+	.v-caption.v-caption-master-ui > .v-captiontext
+	{
+		font-size: 1.5em;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	
+	.master-ui .dbLogo a
+	{
+		display: flex;
+	}
+	
+	.master-ui .dbLogo a img
+	{
+		border: 2px solid black;
+	}
+	
+	.master-ui .dbLogo:hover
+	{
+		outline: 2px solid yellow;
+	}
+}
