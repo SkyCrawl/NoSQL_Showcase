@@ -1,4 +1,6 @@
 .DS_Store
+.settings
 
+build
 war/VAADIN/widgetsets
 war/WEB-INF/classes
