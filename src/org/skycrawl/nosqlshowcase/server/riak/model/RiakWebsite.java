@@ -4,6 +4,13 @@ public class RiakWebsite extends AbstractRiakSingleLinkValue
 {
 	public String domain; // fully qualified
 	
+	/**
+	 * Default constructor makes Jackson happy.
+	 */
+	protected RiakWebsite()
+	{
+	}
+	
 	public RiakWebsite(String domain)
 	{
 		this.domain = domain;

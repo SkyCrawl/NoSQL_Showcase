@@ -7,6 +7,7 @@ import org.skycrawl.nosqlshowcase.server.root.db.DatabaseHandle;
 import org.skycrawl.nosqlshowcase.server.root.ui.dialogs.DialogCommons.IDialogResultHandler;
 import org.skycrawl.nosqlshowcase.server.root.ui.dialogs.GeneralDialogs;
 import org.skycrawl.nosqlshowcase.server.root.ui.notifications.MyNotifications;
+import org.skycrawl.nosqlshowcase.server.root.ui.util.IMenuContext;
 import org.skycrawl.nosqlshowcase.server.root.ui.util.IMiniApp;
 
 import com.vaadin.server.ErrorMessage;
@@ -149,11 +150,6 @@ public abstract class AbstractDatabaseUI<C extends Object, DC extends AbstractDa
 	
 	private void doBuildUI()
 	{
-		// prepare the mini-app layout/component for later use
-		final IMiniApp<DC> miniApp = getMiniApp();
-		miniApp.setSizeFull();
-		miniApp.setStyleName("miniApp");
-		
 		/*
 		 * Build header.
 		 */
@@ -237,11 +233,37 @@ public abstract class AbstractDatabaseUI<C extends Object, DC extends AbstractDa
 		hLayout_header.setExpandRatio(fLayout_dbInfo, 1);
 		
 		/*
-		 * Build menu.
+		 * Prepare the menu and mini-app layout/component for later use.
 		 */
-		MenuBar menu = new MenuBar();
+		
+		final MenuBar menu = new MenuBar();
 		menu.setSizeUndefined();
 		menu.setWidth("100%");
+		
+		final IMenuContext menuContextProvider = new IMenuContext()
+		{
+			@Override
+			public MenuItem getMenuItemOrCreateNew(String caption)
+			{
+				for(MenuItem menuItem : menu.getItems())
+				{
+					if(menuItem.getText().equals(caption))
+					{
+						return menuItem;
+					}
+				}
+				return menu.addItem(caption, null);
+			}
+		};
+		
+		final IMiniApp<DC> miniApp = getMiniApp();
+		miniApp.setSizeFull();
+		miniApp.setStyleName("miniApp");
+		miniApp.refresh(menuContextProvider, getDataController());;
+		
+		/*
+		 * Build the menu.
+		 */
 		
 		MenuItem actionMenu = menu.addItem("Mini-app", null);
 		actionMenu.setStyleName("miniApp");
@@ -252,7 +274,7 @@ public abstract class AbstractDatabaseUI<C extends Object, DC extends AbstractDa
 			@Override
 			public void menuSelected(MenuItem selectedItem)
 			{
-				miniApp.refresh(getDataController());
+				miniApp.refresh(menuContextProvider, getDataController());
 			}
 		});
 		actionMenu.addItem("Erase data", new MenuBar.Command()

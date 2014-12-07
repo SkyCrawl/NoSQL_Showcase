@@ -8,6 +8,13 @@ public class RiakX509Cert extends AbstractRiakSingleLinkValue
 	public String organizationUnit;
 	public String commonName;
 	
+	/**
+	 * Default constructor makes Jackson happy.
+	 */
+	public RiakX509Cert()
+	{
+	}
+	
 	@Override
 	public String toKey()
 	{

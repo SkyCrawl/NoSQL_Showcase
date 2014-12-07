@@ -11,6 +11,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.skycrawl.nosqlshowcase.server.Logger;
 import org.skycrawl.nosqlshowcase.server.ServletResources;
+import org.skycrawl.nosqlshowcase.server.riak.model.AbstractRiakSingleLinkValue;
 import org.skycrawl.nosqlshowcase.server.riak.model.RiakWebsite;
 import org.skycrawl.nosqlshowcase.server.riak.model.RiakX509Cert;
 import org.skycrawl.nosqlshowcase.server.root.db.AbstractDataController;
@@ -39,11 +40,9 @@ public class RiakDataController extends AbstractDataController<IRiakClient>
 	 * All buckets this Riak mini-app uses.
 	 */
 	public static final String BUCKET_NAME_CERTIFICATES = "certificates";
-	public static final String BUCKET_NAME_WEBSITES = "websites"; // TODO: use it only if we can't list bucket names
 	
 	// private DomainBucket<RiakX509Cert> bucket_certs;
 	private Bucket bucket_certs;
-	private Bucket bucket_websites;
 	
 	public RiakDataController(IRiakClient connection)
 	{
@@ -55,7 +54,6 @@ public class RiakDataController extends AbstractDataController<IRiakClient>
 	{
 		// this.bucket_certs = DomainBucket.builder(getBucket("certificates"), RiakX509Cert.class).build();
 		this.bucket_certs = getBucket(BUCKET_NAME_CERTIFICATES);
-		this.bucket_websites = getBucket(BUCKET_NAME_WEBSITES);
 	}
 	
 	public Iterable<NodeStats> getNodeStats() throws RiakException
@@ -66,6 +64,7 @@ public class RiakDataController extends AbstractDataController<IRiakClient>
 	// ----------------------------------------------------------------
 	// INDIVIDUAL DATA MANIPULATION ROUTINES
 
+	@SuppressWarnings("deprecation")
 	public Set<String> getAllBucketNames() throws RiakException
 	{
 		try
@@ -89,6 +88,25 @@ public class RiakDataController extends AbstractDataController<IRiakClient>
 	public Bucket getBucket(String name) throws RiakException
 	{
 		return getConnection().fetchBucket(name).execute();
+	}
+	
+	public RiakX509Cert linkWalkToRoot(RiakWebsite start) throws RiakException
+	{
+		AbstractRiakSingleLinkValue current = start;
+		while(current.toLink() != null)
+		{
+			RiakLink next = current.toLink();
+			if(!next.getBucket().equals(BUCKET_NAME_CERTIFICATES))
+			{
+				throw new RiakException(String.format("Invalid link binding. Item with key '%s' contains a link to bucket '%s'. Expected: '%s'.",
+						current.toKey(), next.getBucket(), BUCKET_NAME_CERTIFICATES)); 
+			}
+			else
+			{
+				current = getBucket(next.getBucket()).fetch(next.getKey(), RiakX509Cert.class).execute();
+			}
+		}
+		return (RiakX509Cert) current;
 	}
 	
 	/**
@@ -122,9 +140,9 @@ public class RiakDataController extends AbstractDataController<IRiakClient>
 				}
 			}
 			
-			System.out.println(url.getAuthority());
-			System.out.println(url.getHost());
-			System.out.println(url.getPath());
+			// System.out.println(url.getAuthority());
+			// System.out.println(url.getHost());
+			// System.out.println(url.getPath());
 			
 			// store and link website
 			RiakWebsite website = new RiakWebsite(url.getHost());

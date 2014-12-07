@@ -8,6 +8,7 @@
 	
 	<!-- include the Java code from this package that is going to be translated to Javascript -->
 	<source path="client" />
+	<source path="shared" />
 	
 	<!-- Some initial client GWT setup. -->
 	<entry-point class="org.skycrawl.nosqlshowcase.client.AppEntryPoint"/>
@@ -30,8 +31,6 @@
      See https://vaadin.com/wiki/-/wiki/Main/Using%20SuperDevMode for more
      information and instructions.
     -->
-    <!-- <set-configuration-property name="devModeRedirectEnabled" value="true" /> -->
-
-
-    <inherits name="org.vaadin.hene.popupbutton.widgetset.PopupbuttonWidgetset" />
+    <set-configuration-property name="devModeRedirectEnabled" value="true" />
+    
 </module>

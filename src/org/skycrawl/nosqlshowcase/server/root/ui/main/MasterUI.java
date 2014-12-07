@@ -13,6 +13,7 @@ import com.vaadin.annotations.Title;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
 @Title("NoSQL Showcase")
 public class MasterUI extends AbstractConfiguredUI
@@ -22,11 +23,15 @@ public class MasterUI extends AbstractConfiguredUI
 	@Override
 	protected void buildUI()
 	{
-		// first and foremost:
-		addStyleName("master-ui");
+		/*
+		 * First and foremost:
+		 */
+		// addStyleName("master-ui"); // not needed at the moment
 
-		// define content
-		HorizontalFlowLayout hfl = new HorizontalFlowLayout(new IFlowLayoutStyleProvider()
+		/*
+		 * Define content.
+		 */
+		HorizontalFlowLayout fLayout_dbLogo = new HorizontalFlowLayout(new IFlowLayoutStyleProvider()
 		{
 			@Override
 			public void setStylesForInnerComponent(Component c, StyleBuilder builder)
@@ -34,9 +39,9 @@ public class MasterUI extends AbstractConfiguredUI
 				builder.setProperty("margin", "25px 50px 25px 0px");
 			}
 		});
-		hfl.setSizeFull();
-		hfl.setCaption("Click on a database logo to open its corresponding mini-app:");
-		hfl.setStyleName("master-ui");
+		fLayout_dbLogo.setSizeFull();
+		fLayout_dbLogo.setStyleName("dbLogoLayout");
+		fLayout_dbLogo.setCaption("Click on a database logo to open its corresponding mini-app:");
 		
 		for(final Entry<String, DatabaseHandle<?>> entry : Config.getSupportedDatabases().entrySet())
 		{
@@ -45,11 +50,32 @@ public class MasterUI extends AbstractConfiguredUI
 			Label lbl_banner = new Label(String.format("<a href=\"%s\"><img src=\"%s\"></a>", clickAction, dbLogoRelativeURL), ContentMode.HTML);
 			lbl_banner.setSizeUndefined();
 			lbl_banner.setStyleName("dbLogo");
-			hfl.addComponent(lbl_banner);
+			fLayout_dbLogo.addComponent(lbl_banner);
 		}
 		
-		// and finish up
+		/*
+		 * Bring it all together...
+		 */
+		VerticalLayout vLayout_master = new VerticalLayout();
+		vLayout_master.setSizeFull();
+		// addTestButton(vLayout_master); // ONLY FOR DEVELOPMENT
+		vLayout_master.addComponent(fLayout_dbLogo);
+		
 		setPageCroppedAndHorizontallyCentered(true);
-		setContent(hfl);
+		setContent(vLayout_master);
 	}
+	
+	/*private void addTestButton(final VerticalLayout masterLayout)
+	{
+		masterLayout.addComponent(new Button("Test it", new Button.ClickListener()
+		{
+			private static final long	serialVersionUID	= 1412297752787707103L;
+
+			@Override
+			public void buttonClick(ClickEvent event)
+			{
+				// nothing to test atm
+			}
+		}));
+	}*/
 }

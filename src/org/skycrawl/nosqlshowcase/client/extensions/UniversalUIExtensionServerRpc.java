@@ -5,7 +5,8 @@ import com.vaadin.shared.communication.ServerRpc;
 /** 
  * @author SkyCrawl 
  */
-public interface UniversalUIExtensionServerRpc extends ServerRpc {
+public interface UniversalUIExtensionServerRpc extends ServerRpc
+{
 	void logWarning(String message);
 
 	void logThrowable(String message, String throwableStackTrace);

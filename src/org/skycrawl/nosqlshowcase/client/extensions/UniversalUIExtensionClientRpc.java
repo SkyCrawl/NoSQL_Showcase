@@ -3,7 +3,8 @@ package org.skycrawl.nosqlshowcase.client.extensions;
 import com.vaadin.shared.communication.ClientRpc;
 
 /** 
- * @author SkyCrawl 
+ * @author SkyCrawl
  */
-public interface UniversalUIExtensionClientRpc extends ClientRpc {
+public interface UniversalUIExtensionClientRpc extends ClientRpc
+{
 }

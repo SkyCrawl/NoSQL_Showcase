@@ -21,9 +21,9 @@ public class UniversalUIExtensionConnector extends AbstractExtensionConnector
 	public UniversalUIExtensionConnector()
 	{
 		/*
-		registerRpc(ClientLoggingExtensionClientRpc.class, new ClientLoggingExtensionClientRpc()
+		registerRpc(UniversalUIExtensionClientRpc.class, new UniversalUIExtensionClientRpc()
 		{
-			private static final long serialVersionUID = 5749987507481194601L;
+			private static final long	serialVersionUID	= 3288019886099574976L;
 		});
 		*/
 	}

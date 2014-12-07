@@ -1,29 +1,29 @@
 @mixin masterUI
 {
-	.v-caption.v-caption-master-ui
+	.v-caption.v-caption-dbLogoLayout
 	{
 		margin-top: 50px;
 		margin-bottom: 25px;
 	}
 	
-	.v-caption.v-caption-master-ui > .v-captiontext
+	.v-caption.v-caption-dbLogoLayout > .v-captiontext
 	{
 		font-size: 1.5em;
 		font-weight: bold;
 		text-decoration: underline;
 	}
 	
-	.master-ui .dbLogo a
+	.dbLogoLayout .dbLogo a
 	{
 		display: flex;
 	}
 	
-	.master-ui .dbLogo a img
+	.dbLogoLayout .dbLogo a img
 	{
 		border: 2px solid black;
 	}
 	
-	.master-ui .dbLogo:hover
+	.dbLogoLayout .dbLogo:hover
 	{
 		outline: 2px solid yellow;
 	}

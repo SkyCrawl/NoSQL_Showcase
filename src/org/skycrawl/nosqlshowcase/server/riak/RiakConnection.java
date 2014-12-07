@@ -6,7 +6,6 @@ import org.skycrawl.nosqlshowcase.server.root.db.AbstractDatabaseConnection;
 import com.basho.riak.client.IRiakClient;
 import com.basho.riak.client.RiakException;
 import com.basho.riak.client.RiakFactory;
-import com.basho.riak.client.query.NodeStats;
 
 public class RiakConnection extends AbstractDatabaseConnection<IRiakClient, RiakDataController>
 {
@@ -21,16 +20,24 @@ public class RiakConnection extends AbstractDatabaseConnection<IRiakClient, Riak
 	@Override
 	public String getDBVersion()
 	{
+		/*
+		 * NORMALLY, the following could be used. It is not supported by protobuff connections, however.
+		 * 
 		try
 		{
 			for(NodeStats stats : getConnection().stats())
 			{
-				return stats.riakCoreVersion();
+				if(stats.riakCoreVersion() != null)
+				{
+					return stats.riakCoreVersion();
+				}
 			}
 		}
 		catch (RiakException e)
 		{
+			Logger.logThrowable("Could not fetch Riak version. Returning null...", e);
 		}
+		*/
 		return null;
 	}
 	

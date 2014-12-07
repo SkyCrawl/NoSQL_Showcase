@@ -12148,25 +12148,25 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 15px;
 }
 
-.nosql_showcase .v-caption.v-caption-master-ui {
+.nosql_showcase .v-caption.v-caption-dbLogoLayout {
 	margin-top: 50px;
 	margin-bottom: 25px;
 }
 
-.nosql_showcase .v-caption.v-caption-master-ui > .v-captiontext {
+.nosql_showcase .v-caption.v-caption-dbLogoLayout > .v-captiontext {
 	font-size: 1.5em;
 	font-weight: bold;
 	text-decoration: underline;
 }
 
-.nosql_showcase .master-ui .dbLogo a {
+.nosql_showcase .dbLogoLayout .dbLogo a {
 	display: flex;
 }
 
-.nosql_showcase .master-ui .dbLogo a img {
+.nosql_showcase .dbLogoLayout .dbLogo a img {
 	border: 2px solid black;
 }
 
-.nosql_showcase .master-ui .dbLogo:hover {
+.nosql_showcase .dbLogoLayout .dbLogo:hover {
 	outline: 2px solid yellow;
 }
