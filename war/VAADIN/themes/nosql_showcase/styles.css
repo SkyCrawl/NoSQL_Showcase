@@ -12170,3 +12170,11 @@ div.v-layout.v-horizontal.v-widget {
 .nosql_showcase .dbLogoLayout .dbLogo:hover {
 	outline: 2px solid yellow;
 }
+
+.nosql_showcase .v-menubar {
+	white-space: normal;
+}
+
+.nosql_showcase .v-menubar-menuitem {
+	white-space: nowrap;
+}
