@@ -6,10 +6,10 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import org.skycrawl.nosqlshowcase.server.root.db.AbstractDatabaseConnection;
-import org.skycrawl.nosqlshowcase.server.root.db.DatabaseHandle;
-import org.skycrawl.nosqlshowcase.server.root.db.IDatabaseInfo;
-import org.skycrawl.nosqlshowcase.server.root.ui.main.MasterUI;
+import org.skycrawl.nosqlshowcase.server.root.common.db.AbstractDatabaseConnection;
+import org.skycrawl.nosqlshowcase.server.root.common.db.DatabaseHandle;
+import org.skycrawl.nosqlshowcase.server.root.common.db.IDatabaseInfo;
+import org.skycrawl.nosqlshowcase.server.root.ui.MasterUI;
 
 import com.vaadin.ui.UI;
 
