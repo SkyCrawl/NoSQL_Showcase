@@ -1,6 +1,6 @@
 package org.skycrawl.nosqlshowcase.server.neo4j;
 
-import org.skycrawl.nosqlshowcase.server.root.db.AbstractDatabaseConnection;
+import org.skycrawl.nosqlshowcase.server.root.common.db.AbstractDatabaseConnection;
 
 public class Neo4jConnection extends AbstractDatabaseConnection<Object, Neo4jDataController>
 {
