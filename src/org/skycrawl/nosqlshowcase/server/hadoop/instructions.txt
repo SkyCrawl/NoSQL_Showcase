@@ -1,0 +1,8 @@
+SPUŠTĚNÍ VELICE PODOBNÉ CVIČENÍ:
+
+mkdir classes
+javac -classpath /usr/lib/hadoop-1.2.1/hadoop-core-1.2.1.jar -d classes PalindromCount.java
+jar -cvf palindromCount.jar -C classes/ .
+hadoop fs -mkdir input1
+hadoop fs -copyFromLocal inputText.txt input1/file01
+hadoop jar palindromCount.jar PalindromCount input1 output1

@@ -1,7 +1,7 @@
 package org.skycrawl.nosqlshowcase.client.extensions;
 
 import org.skycrawl.nosqlshowcase.client.gwtmanagers.GWTLogger;
-import org.skycrawl.nosqlshowcase.server.root.ui.main.UniversalUIExtension;
+import org.skycrawl.nosqlshowcase.server.root.ui.UniversalUIExtension;
 
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.communication.RpcProxy;
