@@ -4,8 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.skycrawl.nosqlshowcase.server.ThemeResources;
-import org.skycrawl.nosqlshowcase.server.root.db.IDatabaseInfo;
-import org.skycrawl.nosqlshowcase.server.root.util.IVersionsSpecifier;
+import org.skycrawl.nosqlshowcase.server.cassandra.view.CassandraUI;
+import org.skycrawl.nosqlshowcase.server.root.common.db.IDatabaseInfo;
+import org.skycrawl.nosqlshowcase.server.root.common.db.IVersionsSpecifier;
 
 import com.vaadin.ui.UI;
 
@@ -27,13 +28,13 @@ public class CassandraInfo implements IDatabaseInfo<CassandraConnection>
 			@Override
 			public String getConciseString()
 			{
-				return "TODO";
+				return "1.2, 2.0, 2.1";
 			}
 			
 			@Override
 			public List<String> getAllVersions()
 			{
-				return Arrays.asList("TODO");
+				return Arrays.asList("1.2", "2.0", "2.1");
 			}
 		};
 	}
@@ -41,14 +42,13 @@ public class CassandraInfo implements IDatabaseInfo<CassandraConnection>
 	@Override
 	public String getSupportedClient()
 	{
-		return "TODO";
+		return "DataStax Java Driver for Apache Cassandra v2.1.3";
 	}
 	
 	@Override
 	public int getDefaultPort()
 	{
-		// TODO:
-		return 0;
+		return 9042;
 	}
 	
 	@Override

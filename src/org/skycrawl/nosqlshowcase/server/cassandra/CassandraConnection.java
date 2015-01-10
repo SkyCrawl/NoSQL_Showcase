@@ -1,20 +1,24 @@
 package org.skycrawl.nosqlshowcase.server.cassandra;
 
-import org.skycrawl.nosqlshowcase.server.root.db.AbstractDatabaseConnection;
+import org.skycrawl.nosqlshowcase.server.cassandra.controller.CassandraDataController;
+import org.skycrawl.nosqlshowcase.server.root.common.db.AbstractDatabaseConnection;
 
-public class CassandraConnection extends AbstractDatabaseConnection<Object, CassandraDataController>
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Metadata;
+import com.datastax.driver.core.Session;
+
+public class CassandraConnection extends AbstractDatabaseConnection<Session, CassandraDataController>
 {
 	private static final long	serialVersionUID	= -4778024073075459382L;
 
 	@Override
-	protected Object doConnect(String hostname, int port) throws Exception
+	protected Session doConnect(String hostname, int port) throws Exception
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return Cluster.builder().addContactPoint(hostname).build().connect();
 	}
 	
 	@Override
-	protected CassandraDataController createDataController(Object connection)
+	protected CassandraDataController createDataController(Session connection)
 	{
 		return new CassandraDataController(connection);
 	}
@@ -22,20 +26,26 @@ public class CassandraConnection extends AbstractDatabaseConnection<Object, Cass
 	@Override
 	public String getDBVersion()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return getConnection().getCluster().getMetadata().getAllHosts().iterator().next().getCassandraVersion().toString();
 	}
 	
 	@Override
 	protected boolean isAlive()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		Metadata metadata = getConnection().getCluster().getMetadata();
+		if(metadata != null)
+		{
+			return !metadata.getAllHosts().isEmpty();
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	@Override
 	protected void doClose()
 	{
-		// TODO Auto-generated method stub
+		getConnection().getCluster().close();
 	}
 }
