@@ -1,6 +1,9 @@
 package org.skycrawl.nosqlshowcase.server.riak.model;
 
-public class RiakX509Cert extends AbstractRiakSingleLinkValue
+import org.skycrawl.nosqlshowcase.server.root.common.model.ICert;
+import org.skycrawl.nosqlshowcase.server.root.common.sample.DefaultCertObject;
+
+public class RiakX509Cert extends AbstractRiakSingleLinkValue implements ICert
 {
 	public int version;
 	public String pubKeyAlg;
@@ -15,48 +18,72 @@ public class RiakX509Cert extends AbstractRiakSingleLinkValue
 	{
 	}
 	
+	/**
+	 * A copy-constructor, if you will.
+	 * 
+	 * @param cert
+	 */
+	public RiakX509Cert(DefaultCertObject cert)
+	{
+		this.version = cert.getVersion();
+		this.pubKeyAlg = cert.getPubKeyAlg();
+		this.organizationName = cert.getOrganizationName();
+		this.organizationUnit = cert.getOrganizationUnit();
+		this.commonName = cert.getCommonName();
+	}
+
 	@Override
 	public String toKey()
 	{
 		return String.valueOf(hashCode());
 	}
 	
+	@Override
 	public int getVersion()
 	{
 		return this.version;
 	}
+	@Override
 	public void setVersion(int version)
 	{
 		this.version = version;
 	}
+	@Override
 	public String getPubKeyAlg()
 	{
 		return this.pubKeyAlg;
 	}
+	@Override
 	public void setPubKeyAlg(String pubKeyAlg)
 	{
 		this.pubKeyAlg = pubKeyAlg;
 	}
+	@Override
 	public String getOrganizationName()
 	{
 		return this.organizationName;
 	}
+	@Override
 	public void setOrganizationName(String organizationName)
 	{
 		this.organizationName = organizationName;
 	}
+	@Override
 	public String getOrganizationUnit()
 	{
 		return this.organizationUnit;
 	}
+	@Override
 	public void setOrganizationUnit(String organizationUnit)
 	{
 		this.organizationUnit = organizationUnit;
 	}
+	@Override
 	public String getCommonName()
 	{
 		return this.commonName;
 	}
+	@Override
 	public void setCommonName(String commonName)
 	{
 		this.commonName = commonName;

@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.skycrawl.nosqlshowcase.server.ThemeResources;
 import org.skycrawl.nosqlshowcase.server.riak.view.RiakUI;
-import org.skycrawl.nosqlshowcase.server.root.db.IDatabaseInfo;
-import org.skycrawl.nosqlshowcase.server.root.util.IVersionsSpecifier;
+import org.skycrawl.nosqlshowcase.server.root.common.db.IDatabaseInfo;
+import org.skycrawl.nosqlshowcase.server.root.common.db.IVersionsSpecifier;
 
 import com.basho.riak.client.raw.pbc.PBClientConfig;
 import com.vaadin.ui.UI;

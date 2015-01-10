@@ -1,8 +1,5 @@
 package org.skycrawl.nosqlshowcase.server.riak.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -10,12 +7,12 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.skycrawl.nosqlshowcase.server.Logger;
-import org.skycrawl.nosqlshowcase.server.ServletResources;
 import org.skycrawl.nosqlshowcase.server.riak.model.AbstractRiakSingleLinkValue;
 import org.skycrawl.nosqlshowcase.server.riak.model.RiakWebsite;
 import org.skycrawl.nosqlshowcase.server.riak.model.RiakX509Cert;
-import org.skycrawl.nosqlshowcase.server.root.db.AbstractDataController;
-import org.skycrawl.nosqlshowcase.server.root.ui.dialogs.GeneralDialogs;
+import org.skycrawl.nosqlshowcase.server.root.common.db.AbstractDataController;
+import org.skycrawl.nosqlshowcase.server.root.common.model.WebsiteToCertDataModel;
+import org.skycrawl.nosqlshowcase.server.root.common.sample.DefaultCertObject;
 import org.skycrawl.nosqlshowcase.server.root.ui.notifications.MyNotifications;
 
 import com.basho.riak.client.IRiakClient;
@@ -25,14 +22,6 @@ import com.basho.riak.client.bucket.Bucket;
 import com.basho.riak.client.query.NodeStats;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
-import com.vaadin.event.MouseEvents.ClickEvent;
-import com.vaadin.event.MouseEvents.ClickListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TextArea;
-
-import de.steinwedel.messagebox.Icon;
-import de.steinwedel.messagebox.MessageBox;
 
 public class RiakDataController extends AbstractDataController<IRiakClient>
 {
@@ -109,35 +98,85 @@ public class RiakDataController extends AbstractDataController<IRiakClient>
 		return (RiakX509Cert) current;
 	}
 	
+	@Override
+	public Set<String> getTLDs() throws RiakException
+	{
+		Set<String> tlds = getAllBucketNames();
+		tlds.remove(RiakDataController.BUCKET_NAME_CERTIFICATES);
+		return tlds;
+	}
+
+	@Override
+	public WebsiteToCertDataModel getSetDomainAndIntersections(Set<String> tlds) throws RiakException
+	{
+		WebsiteToCertDataModel result = new WebsiteToCertDataModel();
+		try
+		{
+			// and turn them into Venn data
+			for(String tld : tlds)
+			{
+				result.registerSet(tld);
+				
+				Bucket bucket = getBucket(tld);
+				for(String domain : bucket.keys())
+				{
+					// fetch the website database entity
+					RiakWebsite website = bucket.fetch(domain, RiakWebsite.class).execute();
+					
+					// determine root CA for it
+					RiakX509Cert rootCA = linkWalkToRoot(website);
+					
+					// register the certificate
+					result.registerSet(rootCA);
+					
+					// and register the current found overlap
+					result.registerOverlap(domain, tld, rootCA);
+				}
+			}
+			return result;
+		}
+		catch (Exception e)
+		{
+			Logger.logThrowable("Could not create mini-app: ", e);
+			MyNotifications.showError("Mini app could not be launched", e.getLocalizedMessage(), null);
+			return null;
+		}
+	}
+	
 	/**
 	 * @param fqn fully qualified domain name to which the certificate chain belongs
 	 * @param certificate_chain
 	 * @return
 	 */
-	public boolean store(URL url, List<RiakX509Cert> certificate_chain)
+	@Override
+	public boolean store(URL url, List<DefaultCertObject> certificateChain)
 	{
 		/*
 		 * Root authorities need to be first so that we can store them and
 		 * create links from subsequent authorities in linear fashion.
 		 */
-		Collections.reverse(certificate_chain);
+		Collections.reverse(certificateChain);
 		
 		try
 		{
-			// store and link certificates
-			PeekingIterator<RiakX509Cert> it = Iterators.peekingIterator(certificate_chain.iterator());
-			RiakX509Cert current = null, next; // remember the website's certificate when iterating finishes
+			// prepare to store and link certificates
+			PeekingIterator<DefaultCertObject> it = Iterators.peekingIterator(certificateChain.iterator());
+			RiakX509Cert current = null; // remember the website's certificate when iterating finishes
+			
+			// first store the root CA
+			current = new RiakX509Cert(it.next());
+			bucket_certs.store(current.toKey(), current).execute();
+			
+			// then continue storing certificate chain and link certificates
 			while(it.hasNext())
 			{
-				current = it.next();
-				next = it.hasNext() ? it.peek() : null;
+				// do store
+				RiakX509Cert next = new RiakX509Cert(it.next());
+				next.useLink(new RiakLink(BUCKET_NAME_CERTIFICATES, current.toKey(), ""));
+				bucket_certs.store(next.toKey(), next).execute();
 				
-				bucket_certs.store(current.toKey(), current).execute();
-				if(next != null)
-				{
-					next.useLink(new RiakLink(BUCKET_NAME_CERTIFICATES, current.toKey(), ""));
-					bucket_certs.store(next.toKey(), next).execute();
-				}
+				// prepare for next iteration
+				current = next;
 			}
 			
 			// System.out.println(url.getAuthority());
@@ -170,69 +209,6 @@ public class RiakDataController extends AbstractDataController<IRiakClient>
 			for(String key : bucket.keys())
 			{
 				bucket.delete(key).execute();
-			}
-		}
-	}
-
-	@Override
-	public void loadSampleData() throws IOException
-	{
-		final RiakSampleLoader websiteLoader = new RiakSampleLoader(this); 
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(ServletResources.getResourceAsStream(ServletResources.SAMPLE_DATA_RIAK))))
-		{
-			String url;
-			while ((url = br.readLine()) != null)
-			{
-				websiteLoader.load(url);
-			}
-		}
-		finally
-		{
-			if(websiteLoader.getLoadResult().loadWasACompleteSuccess())
-			{
-				MyNotifications.showSuccess(null, "Sample data successfully loaded.", null);
-			}
-			else
-			{
-				MyNotifications.showWarning("Sample data load result", "Click to display details...", new ClickListener()
-				{
-					private static final long	serialVersionUID	= 8456228417991600455L;
-
-					@Override
-					public void click(ClickEvent event)
-					{
-						TabSheet report = new TabSheet();
-						report.setSizeFull();
-						if(!websiteLoader.getLoadResult().getMalformedURLs().isEmpty())
-						{
-							report.addTab(getComponentFor(websiteLoader.getLoadResult().getMalformedURLs()), "Malformed URLs");
-						}
-						if(!websiteLoader.getLoadResult().getUrlsWithInvalidResponse().isEmpty())
-						{
-							report.addTab(getComponentFor(websiteLoader.getLoadResult().getUrlsWithInvalidResponse()), "Invalid response URLs");
-						}
-						if(!websiteLoader.getLoadResult().getFailedToSaveURLs().isEmpty())
-						{
-							report.addTab(getComponentFor(websiteLoader.getLoadResult().getFailedToSaveURLs()), "Not saved URLs");
-						}
-						if(!websiteLoader.getLoadResult().getIgnoredURLs().isEmpty())
-						{
-							report.addTab(getComponentFor(websiteLoader.getLoadResult().getIgnoredURLs()), "Ignored URLs");
-						}
-						
-						MessageBox mb = GeneralDialogs.componentDialog("Sample data load report", Icon.WARN, report);
-						mb.setWidth("600px");
-						mb.setHeight("400px");
-					}
-					
-					private Component getComponentFor(List<String> urlList)
-					{
-						TextArea result = new TextArea(null, StringUtils.join(urlList.iterator(), '\n'));
-						result.setSizeFull();
-						result.setWordwrap(false);
-						return result;
-					}
-				});
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 package org.skycrawl.nosqlshowcase.server.riak;
 
 import org.skycrawl.nosqlshowcase.server.riak.controller.RiakDataController;
-import org.skycrawl.nosqlshowcase.server.root.db.AbstractDatabaseConnection;
+import org.skycrawl.nosqlshowcase.server.root.common.db.AbstractDatabaseConnection;
 
 import com.basho.riak.client.IRiakClient;
 import com.basho.riak.client.RiakException;
