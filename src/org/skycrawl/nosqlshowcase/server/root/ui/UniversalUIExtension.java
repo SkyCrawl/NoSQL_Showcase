@@ -1,4 +1,4 @@
-package org.skycrawl.nosqlshowcase.server.root.ui.main;
+package org.skycrawl.nosqlshowcase.server.root.ui;
 
 import java.util.logging.Level;
 

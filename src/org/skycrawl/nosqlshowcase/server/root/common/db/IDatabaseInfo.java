@@ -1,8 +1,6 @@
-package org.skycrawl.nosqlshowcase.server.root.db;
+package org.skycrawl.nosqlshowcase.server.root.common.db;
 
 import java.io.Serializable;
-
-import org.skycrawl.nosqlshowcase.server.root.util.IVersionsSpecifier;
 
 import com.vaadin.ui.UI;
 

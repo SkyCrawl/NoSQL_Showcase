@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.skycrawl.nosqlshowcase.server.ThemeResources;
-import org.skycrawl.nosqlshowcase.server.root.ui.main.AbstractConfiguredUI;
+import org.skycrawl.nosqlshowcase.server.root.ui.AbstractConfiguredUI;
 import org.skycrawl.nosqlshowcase.server.root.util.SimpleIDGenerator;
 import org.vaadin.alump.fancylayouts.FancyNotification;
 

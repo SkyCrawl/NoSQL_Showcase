@@ -1,4 +1,4 @@
-package org.skycrawl.nosqlshowcase.server.root.db;
+package org.skycrawl.nosqlshowcase.server.root.common.db;
 
 public class DatabaseHandle<CA extends AbstractDatabaseConnection<?,?>>
 {

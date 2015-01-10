@@ -1,4 +1,4 @@
-package org.skycrawl.nosqlshowcase.server.root.util;
+package org.skycrawl.nosqlshowcase.server.root.common.db;
 
 import java.util.List;
 

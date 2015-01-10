@@ -1,10 +1,10 @@
-package org.skycrawl.nosqlshowcase.server.root.ui.main;
+package org.skycrawl.nosqlshowcase.server.root.ui;
 
 import java.net.InetAddress;
 import java.util.List;
 import java.util.Locale;
 
-import org.skycrawl.nosqlshowcase.server.root.db.DatabaseHandle;
+import org.skycrawl.nosqlshowcase.server.root.common.db.DatabaseHandle;
 import org.skycrawl.nosqlshowcase.server.root.ui.dialogs.DialogCommons.IDialogResultPreparer;
 import org.skycrawl.nosqlshowcase.server.root.ui.dialogs.GeneralDialogs;
 
@@ -54,7 +54,7 @@ public class DatabaseConnectForm extends FormLayout implements IDialogResultPrep
 				{
 					return Integer.parseInt(value);
 				}
-				catch (NumberFormatException e)
+				catch (NumberFormatException | NullPointerException e)
 				{
 					throw new ConversionException();
 				}

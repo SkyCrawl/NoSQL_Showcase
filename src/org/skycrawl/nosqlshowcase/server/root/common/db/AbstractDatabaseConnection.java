@@ -1,4 +1,4 @@
-package org.skycrawl.nosqlshowcase.server.root.db;
+package org.skycrawl.nosqlshowcase.server.root.common.db;
 
 import java.io.Serializable;
 
@@ -68,8 +68,11 @@ public abstract class AbstractDatabaseConnection<C extends Object, DC extends Ab
 	
 	public void close()
 	{
-		doClose();
-		connection = null;
+		if(connection != null)
+		{
+			doClose();
+			connection = null;
+		}
 	}
 	
 	public abstract String getDBVersion();

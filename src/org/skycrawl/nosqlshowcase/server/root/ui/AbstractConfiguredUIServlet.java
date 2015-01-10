@@ -1,4 +1,4 @@
-package org.skycrawl.nosqlshowcase.server.root.ui.main;
+package org.skycrawl.nosqlshowcase.server.root.ui;
 
 import java.io.IOException;
 import java.util.List;
@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.skycrawl.nosqlshowcase.server.Config;
 import org.skycrawl.nosqlshowcase.server.Logger;
-import org.skycrawl.nosqlshowcase.server.root.db.AbstractDatabaseConnection;
-import org.skycrawl.nosqlshowcase.server.root.db.DatabaseHandle;
+import org.skycrawl.nosqlshowcase.server.root.common.db.AbstractDatabaseConnection;
+import org.skycrawl.nosqlshowcase.server.root.common.db.DatabaseHandle;
 import org.skycrawl.nosqlshowcase.server.root.requests.HttpRequestUtils;
 
 import com.vaadin.server.DeploymentConfiguration;

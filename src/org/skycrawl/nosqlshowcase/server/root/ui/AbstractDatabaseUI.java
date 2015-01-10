@@ -1,25 +1,42 @@
-package org.skycrawl.nosqlshowcase.server.root.ui.main;
+package org.skycrawl.nosqlshowcase.server.root.ui;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.skycrawl.nosqlshowcase.server.Logger;
-import org.skycrawl.nosqlshowcase.server.root.db.AbstractDataController;
-import org.skycrawl.nosqlshowcase.server.root.db.AbstractDatabaseConnection;
-import org.skycrawl.nosqlshowcase.server.root.db.DatabaseHandle;
+import org.skycrawl.nosqlshowcase.server.ServletResources;
+import org.skycrawl.nosqlshowcase.server.root.common.db.AbstractDataController;
+import org.skycrawl.nosqlshowcase.server.root.common.db.AbstractDatabaseConnection;
+import org.skycrawl.nosqlshowcase.server.root.common.db.DatabaseHandle;
+import org.skycrawl.nosqlshowcase.server.root.common.sample.SampleLoader;
 import org.skycrawl.nosqlshowcase.server.root.ui.dialogs.DialogCommons.IDialogResultHandler;
 import org.skycrawl.nosqlshowcase.server.root.ui.dialogs.GeneralDialogs;
 import org.skycrawl.nosqlshowcase.server.root.ui.notifications.MyNotifications;
 import org.skycrawl.nosqlshowcase.server.root.ui.util.IMenuContext;
-import org.skycrawl.nosqlshowcase.server.root.ui.util.IMiniApp;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.vaadin.event.MouseEvents.ClickEvent;
+import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
+
+import de.steinwedel.messagebox.Icon;
+import de.steinwedel.messagebox.MessageBox;
 
 public abstract class AbstractDatabaseUI<C extends Object, DC extends AbstractDataController<C>, CA extends AbstractDatabaseConnection<C,DC>> extends AbstractConfiguredUI
 {
@@ -165,7 +182,7 @@ public abstract class AbstractDatabaseUI<C extends Object, DC extends AbstractDa
 		lbl_currentVersion.setSizeUndefined();
 		lbl_currentVersion.setCaption("Connected to version:");
 		
-		String connectedDBVersion = getConnectionHandle().getDBVersion();
+		final String connectedDBVersion = getConnectionHandle().getDBVersion();
 		if(connectedDBVersion == null)
 		{
 			lbl_currentVersion.setValue("unknown");
@@ -189,7 +206,15 @@ public abstract class AbstractDatabaseUI<C extends Object, DC extends AbstractDa
 		else
 		{
 			lbl_currentVersion.setValue(connectedDBVersion);
-			if(!getDatabaseHandle().getStaticInformation().getSupportedVersions().getAllVersions().contains(connectedDBVersion))
+			Optional<String> theOne = Iterables.tryFind(getDatabaseHandle().getStaticInformation().getSupportedVersions().getAllVersions(), new Predicate<String>()
+			{
+				@Override
+			    public boolean apply(String supportedVersion)
+				{
+					return connectedDBVersion.startsWith(supportedVersion);
+				}
+			});
+			if(!theOne.isPresent())
 			{
 				lbl_currentVersion.setComponentError(new ErrorMessage()
 				{
@@ -256,7 +281,7 @@ public abstract class AbstractDatabaseUI<C extends Object, DC extends AbstractDa
 			}
 		};
 		
-		final IMiniApp<DC> miniApp = getMiniApp();
+		final MiniApp<DC> miniApp = new MiniApp<DC>();
 		miniApp.setSizeFull();
 		miniApp.setStyleName("miniApp");
 		miniApp.refresh(menuContextProvider, getDataController());;
@@ -353,7 +378,64 @@ public abstract class AbstractDatabaseUI<C extends Object, DC extends AbstractDa
 	{
 		try
 		{
-			getDataController().loadSampleData();
+			final SampleLoader<DC> websiteLoader = new SampleLoader<DC>(getDataController()); 
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(ServletResources.getResourceAsStream(ServletResources.SAMPLE_DATA))))
+			{
+				String url;
+				while ((url = br.readLine()) != null)
+				{
+					websiteLoader.load(url);
+				}
+			}
+			finally
+			{
+				if(websiteLoader.getLoadResult().loadWasACompleteSuccess())
+				{
+					MyNotifications.showSuccess(null, "Sample data successfully loaded.", null);
+				}
+				else
+				{
+					MyNotifications.showWarning("Sample data load result", "Click to display details...", new ClickListener()
+					{
+						private static final long	serialVersionUID	= 8456228417991600455L;
+
+						@Override
+						public void click(ClickEvent event)
+						{
+							TabSheet report = new TabSheet();
+							report.setSizeFull();
+							if(!websiteLoader.getLoadResult().getMalformedURLs().isEmpty())
+							{
+								report.addTab(getComponentFor(websiteLoader.getLoadResult().getMalformedURLs()), "Malformed URLs");
+							}
+							if(!websiteLoader.getLoadResult().getUrlsWithInvalidResponse().isEmpty())
+							{
+								report.addTab(getComponentFor(websiteLoader.getLoadResult().getUrlsWithInvalidResponse()), "Invalid response URLs");
+							}
+							if(!websiteLoader.getLoadResult().getFailedToSaveURLs().isEmpty())
+							{
+								report.addTab(getComponentFor(websiteLoader.getLoadResult().getFailedToSaveURLs()), "Not saved URLs");
+							}
+							if(!websiteLoader.getLoadResult().getIgnoredURLs().isEmpty())
+							{
+								report.addTab(getComponentFor(websiteLoader.getLoadResult().getIgnoredURLs()), "Ignored URLs");
+							}
+							
+							MessageBox mb = GeneralDialogs.componentDialog("Sample data load report", Icon.WARN, report);
+							mb.setWidth("600px");
+							mb.setHeight("400px");
+						}
+						
+						private Component getComponentFor(List<String> urlList)
+						{
+							TextArea result = new TextArea(null, StringUtils.join(urlList.iterator(), '\n'));
+							result.setSizeFull();
+							result.setWordwrap(false);
+							return result;
+						}
+					});
+				}
+			}
 		}
 		catch (Exception e)
 		{
@@ -363,9 +445,4 @@ public abstract class AbstractDatabaseUI<C extends Object, DC extends AbstractDa
 			clearDatabase();
 		}
 	}
-	
-	//---------------------------------------------------------------
-	// ABSTRACT INTERFACE
-	
-	protected abstract IMiniApp<DC> getMiniApp();
 }

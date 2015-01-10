@@ -1,4 +1,4 @@
-package org.skycrawl.nosqlshowcase.server.riak.controller;
+package org.skycrawl.nosqlshowcase.server.root.common.sample;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -13,18 +13,18 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.skycrawl.nosqlshowcase.server.Logger;
-import org.skycrawl.nosqlshowcase.server.riak.model.RiakX509Cert;
+import org.skycrawl.nosqlshowcase.server.root.common.db.AbstractDataController;
 
-public class RiakSampleLoader
+public class SampleLoader<DC extends AbstractDataController<?>>
 {
 	// main variables
-	private final RiakDataController dataController;
-	private final RiakSampleLoadResult loadResult;
+	private final DC dataController;
+	private final SampleLoadResult loadResult;
 	
-	public RiakSampleLoader(RiakDataController dataController)
+	public SampleLoader(DC dataController)
 	{
 		this.dataController = dataController;
-		this.loadResult = new RiakSampleLoadResult();
+		this.loadResult = new SampleLoadResult();
 	}
 	
 	//--------------------------------------------------------------
@@ -63,17 +63,26 @@ public class RiakSampleLoader
 			// get it
 			X509Certificate[] certs = (X509Certificate[]) con.getServerCertificates(); // SSL certificates are always x509 certificates
 			
-			// convert it
-			List<RiakX509Cert> db_certs = new ArrayList<RiakX509Cert>(); 
-			for (X509Certificate cert : certs)
+			// take precations
+			if(certs.length == 0)
 			{
-				db_certs.add(toDBObject(cert));
+				getLoadResult().getIgnoredURLs().add(url);
 			}
-			
-			// and store it
-			if(!dataController.store(con.getURL(), db_certs))
+			else
 			{
-				loadResult.getFailedToSaveURLs().add(url);
+				// convert it
+				List<DefaultCertObject> db_certs = new ArrayList<DefaultCertObject>();
+				for (X509Certificate cert : certs)
+				{
+					db_certs.add(toDBObject(cert));
+				}
+				
+				// and store it
+				// TODO: throw various exceptions and handle cases correctly
+				if(!dataController.store(con.getURL(), db_certs))
+				{
+					 getLoadResult().getFailedToSaveURLs().add(url);
+				}
 			}
 		}
 		catch (Exception e)
@@ -84,7 +93,7 @@ public class RiakSampleLoader
 		}
 	}
 	
-	public RiakSampleLoadResult getLoadResult()
+	public SampleLoadResult getLoadResult()
 	{
 		return loadResult;
 	}
@@ -92,9 +101,9 @@ public class RiakSampleLoader
 	//--------------------------------------------------------------
 	// PRIVATE INTERFACE
 	
-	private RiakX509Cert toDBObject(X509Certificate cert) throws IOException
+	private DefaultCertObject toDBObject(X509Certificate cert) throws IOException
 	{
-		RiakX509Cert result = new RiakX509Cert();
+		DefaultCertObject result = new DefaultCertObject();
 		
 		// subject - we don't care (= issuer of the previous certificate)
 		// System.out.println("Cert subject (RFC1779): " + cert.getSubjectX500Principal().getName("RFC1779"));
@@ -115,7 +124,6 @@ public class RiakSampleLoader
 		result.setVersion(cert.getVersion());
 		result.setPubKeyAlg(cert.getPublicKey().getAlgorithm());
 		fillIssuerInfo(result, cert.getIssuerX500Principal().getName("RFC2253"));
-		
 		return result;
 	}
 	
@@ -124,7 +132,7 @@ public class RiakSampleLoader
 	 * @param from issuer's x500 principal name, in RFC2253
 	 * @throws IOException
 	 */
-	private void fillIssuerInfo(RiakX509Cert to, String from) throws IOException
+	private void fillIssuerInfo(DefaultCertObject to, String from) throws IOException
 	{
 		CSVParser parser = CSVParser.parse(from, CSVFormat.RFC4180);
 		for (CSVRecord csvRecord : parser) // just 1 in this case anyway

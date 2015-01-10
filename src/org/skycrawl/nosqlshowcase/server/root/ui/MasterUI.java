@@ -1,10 +1,10 @@
-package org.skycrawl.nosqlshowcase.server.root.ui.main;
+package org.skycrawl.nosqlshowcase.server.root.ui;
 
 import java.util.Map.Entry;
 
 import org.skycrawl.nosqlshowcase.server.Config;
 import org.skycrawl.nosqlshowcase.server.ThemeResources;
-import org.skycrawl.nosqlshowcase.server.root.db.DatabaseHandle;
+import org.skycrawl.nosqlshowcase.server.root.common.db.DatabaseHandle;
 import org.skycrawl.nosqlshowcase.server.root.ui.flowlayout.HorizontalFlowLayout;
 import org.skycrawl.nosqlshowcase.server.root.ui.flowlayout.IFlowLayoutStyleProvider;
 import org.skycrawl.nosqlshowcase.server.root.ui.util.StyleBuilder;
@@ -47,7 +47,7 @@ public class MasterUI extends AbstractConfiguredUI
 		{
 			String clickAction = String.format("javascript:window.open('%s', '_blank');", getRedirectURL(entry.getKey()));
 			String dbLogoRelativeURL = ThemeResources.getVaadinRelativePathForResource(entry.getValue().getStaticInformation().getBannerURL()); 
-			Label lbl_banner = new Label(String.format("<a href=\"%s\"><img src=\"%s\"></a>", clickAction, dbLogoRelativeURL), ContentMode.HTML);
+			Label lbl_banner = new Label(String.format("<a href=\"#\" onclick=\"%s\"><img src=\"%s\"></a>", clickAction, dbLogoRelativeURL), ContentMode.HTML);
 			lbl_banner.setSizeUndefined();
 			lbl_banner.setStyleName("dbLogo");
 			fLayout_dbLogo.addComponent(lbl_banner);

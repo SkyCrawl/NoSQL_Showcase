@@ -1,4 +1,4 @@
-package org.skycrawl.nosqlshowcase.server.riak.view;
+package org.skycrawl.nosqlshowcase.server.root.common.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,35 +34,35 @@ public class WebsiteToCertDataModel
 		registerSet(tld, new VennSet(tld.toUpperCase(), 0));
 	}
 	
-	public void registerSet(RiakX509Cert cert)
+	public void registerSet(ICert cert)
 	{
 		String setLabel = cert.getOrganizationName();
 		if((setLabel == null) || setLabel.isEmpty())
 		{
-			setLabel = cert.getOrganizationUnit(); 
+			setLabel = cert.getOrganizationUnit();
 		}
 		if((setLabel == null) || setLabel.isEmpty())
 		{
-			setLabel = cert.getCommonName(); 
+			setLabel = cert.getCommonName();
 		}
 		if((setLabel == null) || setLabel.isEmpty())
 		{
-			throw new IllegalArgumentException("Could not determine venn set label from the given certificate."); 
+			throw new IllegalArgumentException("Could not determine venn set label from the given certificate.");
 		}
-		registerSet(cert.toKey(), new VennSet(setLabel, 0));
+		registerSet(String.valueOf(cert.hashCode()), new VennSet(setLabel, 0));
 	}
 	
 	/**
-	 * This is not checked in underlying code but each website must only be registered ONCE!
+	 * Although this is not checked, each website must only be registered ONCE!
 	 * 
 	 * @param website
 	 * @param tld
 	 * @param cert
 	 */
-	public void registerOverlap(String website, String tld, RiakX509Cert cert)
+	public void registerOverlap(String website, String tld, ICert cert)
 	{
 		VennSet tldSet = sets.get(tld);
-		VennSet certSet = sets.get(cert.toKey());
+		VennSet certSet = sets.get(String.valueOf(cert.hashCode()));
 		
 		// first check whether the given arguments are mapped to sets
 		if(tldSet == null)

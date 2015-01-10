@@ -1,6 +1,6 @@
 package org.skycrawl.nosqlshowcase.server.root.ui.util;
 
-import org.skycrawl.nosqlshowcase.server.root.db.AbstractDataController;
+import org.skycrawl.nosqlshowcase.server.root.common.db.AbstractDataController;
 
 import com.vaadin.ui.Component;
 

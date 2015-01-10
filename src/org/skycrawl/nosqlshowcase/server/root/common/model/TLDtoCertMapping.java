@@ -1,4 +1,4 @@
-package org.skycrawl.nosqlshowcase.server.riak.view;
+package org.skycrawl.nosqlshowcase.server.root.common.model;
 
 import org.skycrawl.nosqlshowcase.server.root.ui.venndiagram.VennSet;
 import org.skycrawl.nosqlshowcase.server.root.util.Tuple;

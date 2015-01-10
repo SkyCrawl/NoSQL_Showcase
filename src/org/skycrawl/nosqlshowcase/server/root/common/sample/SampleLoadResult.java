@@ -1,16 +1,16 @@
-package org.skycrawl.nosqlshowcase.server.riak.controller;
+package org.skycrawl.nosqlshowcase.server.root.common.sample;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RiakSampleLoadResult
+public class SampleLoadResult
 {
 	private final List<String> malformedURLs;
 	private final List<String> urlsWithInvalidResponse;
 	private final List<String> ignoredURLs;
 	private final List<String> failedToSaveURLs;
 	
-	public RiakSampleLoadResult()
+	public SampleLoadResult()
 	{
 		this.malformedURLs = new ArrayList<String>();
 		this.urlsWithInvalidResponse = new ArrayList<String>();
