@@ -4,8 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.skycrawl.nosqlshowcase.server.ThemeResources;
-import org.skycrawl.nosqlshowcase.server.root.db.IDatabaseInfo;
-import org.skycrawl.nosqlshowcase.server.root.util.IVersionsSpecifier;
+import org.skycrawl.nosqlshowcase.server.redis.view.RedisUI;
+import org.skycrawl.nosqlshowcase.server.root.common.db.IDatabaseInfo;
+import org.skycrawl.nosqlshowcase.server.root.common.db.IVersionsSpecifier;
 
 import com.vaadin.ui.UI;
 
@@ -47,8 +48,7 @@ public class RedisInfo implements IDatabaseInfo<RedisConnection>
 	@Override
 	public int getDefaultPort()
 	{
-		// TODO:
-		return 0;
+		return 6379;
 	}
 	
 	@Override
