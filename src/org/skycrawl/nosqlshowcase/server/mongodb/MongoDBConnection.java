@@ -1,20 +1,25 @@
 package org.skycrawl.nosqlshowcase.server.mongodb;
 
-import org.skycrawl.nosqlshowcase.server.root.db.AbstractDatabaseConnection;
+import org.skycrawl.nosqlshowcase.server.mongodb.controller.MongoDBDataController;
+import org.skycrawl.nosqlshowcase.server.root.common.db.AbstractDatabaseConnection;
 
-public class MongoDBConnection extends AbstractDatabaseConnection<Object, MongoDBDataController>
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+
+public class MongoDBConnection extends AbstractDatabaseConnection<DB, MongoDBDataController>
 {
 	private static final long	serialVersionUID	= -2059812867468336138L;
-
+	
+	public static final String dbName = "nosql_showcase";
+	
 	@Override
-	protected Object doConnect(String hostname, int port) throws Exception
+	protected DB doConnect(String hostname, int port) throws Exception
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return new MongoClient(hostname, port).getDB(dbName);
 	}
 	
 	@Override
-	protected MongoDBDataController createDataController(Object connection)
+	protected MongoDBDataController createDataController(DB connection)
 	{
 		return new MongoDBDataController(connection);
 	}
@@ -22,20 +27,18 @@ public class MongoDBConnection extends AbstractDatabaseConnection<Object, MongoD
 	@Override
 	public String getDBVersion()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return getConnection().command("buildInfo").getString("version");
 	}
 	
 	@Override
 	protected boolean isAlive()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return getConnection().getMongo().getDatabaseNames() != null;
 	}
 
 	@Override
 	protected void doClose()
 	{
-		// TODO Auto-generated method stub
+		getConnection().getMongo().close();
 	}
 }

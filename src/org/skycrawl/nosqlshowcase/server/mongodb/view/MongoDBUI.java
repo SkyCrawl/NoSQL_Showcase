@@ -1,16 +1,14 @@
-package org.skycrawl.nosqlshowcase.server.mongodb;
+package org.skycrawl.nosqlshowcase.server.mongodb.view;
 
-import org.skycrawl.nosqlshowcase.server.root.ui.main.AbstractDatabaseUI;
-import org.skycrawl.nosqlshowcase.server.root.ui.util.IMiniApp;
+import org.skycrawl.nosqlshowcase.server.mongodb.MongoDBConnection;
+import org.skycrawl.nosqlshowcase.server.mongodb.controller.MongoDBDataController;
+import org.skycrawl.nosqlshowcase.server.root.ui.AbstractDatabaseUI;
 
-public class MongoDBUI extends AbstractDatabaseUI<Object, MongoDBDataController, MongoDBConnection>
+import com.mongodb.DB;
+import com.vaadin.annotations.Title;
+
+@Title("MongoDB mini-app")
+public class MongoDBUI extends AbstractDatabaseUI<DB, MongoDBDataController, MongoDBConnection>
 {
 	private static final long	serialVersionUID	= 2343206316209127417L;
-
-	@Override
-	protected IMiniApp<MongoDBDataController> getMiniApp()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

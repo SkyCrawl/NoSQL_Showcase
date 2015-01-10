@@ -1,11 +1,12 @@
 package org.skycrawl.nosqlshowcase.server.mongodb;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.skycrawl.nosqlshowcase.server.ThemeResources;
-import org.skycrawl.nosqlshowcase.server.root.db.IDatabaseInfo;
-import org.skycrawl.nosqlshowcase.server.root.util.IVersionsSpecifier;
+import org.skycrawl.nosqlshowcase.server.mongodb.view.MongoDBUI;
+import org.skycrawl.nosqlshowcase.server.root.common.db.IDatabaseInfo;
+import org.skycrawl.nosqlshowcase.server.root.common.db.IVersionsSpecifier;
 
 import com.vaadin.ui.UI;
 
@@ -27,13 +28,18 @@ public class MongoDBInfo implements IDatabaseInfo<MongoDBConnection>
 			@Override
 			public String getConciseString()
 			{
-				return "TODO";
+				return "2.0 - 2.8";
 			}
 			
 			@Override
 			public List<String> getAllVersions()
 			{
-				return Arrays.asList("TODO");
+				List<String> result = new ArrayList<String>();
+				for(int i = 0; i <= 8; i++)
+				{
+					result.add(String.format("2.%d", i));
+				}
+				return result;
 			}
 		};
 	}
@@ -41,14 +47,13 @@ public class MongoDBInfo implements IDatabaseInfo<MongoDBConnection>
 	@Override
 	public String getSupportedClient()
 	{
-		return "TODO";
+		return "mongodb-java-driver v2.14.4";
 	}
 	
 	@Override
 	public int getDefaultPort()
 	{
-		// TODO:
-		return 0;
+		return 27017;
 	}
 	
 	@Override
