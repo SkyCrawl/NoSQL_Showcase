@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.skycrawl.nosqlshowcase.server.ThemeResources;
+import org.skycrawl.nosqlshowcase.server.neo4j.view.Neo4jUI;
 import org.skycrawl.nosqlshowcase.server.root.common.db.IDatabaseInfo;
 import org.skycrawl.nosqlshowcase.server.root.common.db.IVersionsSpecifier;
 
@@ -27,13 +28,13 @@ public class Neo4jInfo implements IDatabaseInfo<Neo4jConnection>
 			@Override
 			public String getConciseString()
 			{
-				return "TODO";
+				return "2.1.6";
 			}
 			
 			@Override
 			public List<String> getAllVersions()
 			{
-				return Arrays.asList("TODO");
+				return Arrays.asList("2.1.6");
 			}
 		};
 	}
@@ -41,14 +42,13 @@ public class Neo4jInfo implements IDatabaseInfo<Neo4jConnection>
 	@Override
 	public String getSupportedClient()
 	{
-		return "TODO";
+		return "Neo4j Java Client v2.1.6";
 	}
 	
 	@Override
 	public int getDefaultPort()
 	{
-		// TODO:
-		return 0;
+		return 7474;
 	}
 	
 	@Override
